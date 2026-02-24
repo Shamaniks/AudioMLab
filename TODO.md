@@ -6,8 +6,8 @@
 - [ ] **Advanced Layers**:
     - [x] `Dense`: Fully connected layer with Xavier/He initialization.
     - [ ] **`Conv1D`**: Manual 1D convolution and backprop for temporal audio patterns.
-    - [ ] `Flatten` & `Activation` (ReLU/Softmax) layers.
-- [ ] **Loss Functions**: Categorical Cross-Entropy for multi-class support.
+    - [x] `Flatten` & `Activation` (ReLU/Softmax) layers.
+- [x] **Loss Functions**: Categorical Cross-Entropy for multi-class support.
 
 ### Phase 2: Signal Processing & Data
 - [ ] **Audio Pipeline**: 
