@@ -1,6 +1,8 @@
 import numpy as np
 import librosa
-from model import Model
+
+from model import Sequential
+from layers import Dense, Relu, Sigmoid
 
 def generate_synthetic_data():
     sr = 16000 
@@ -19,15 +21,28 @@ def generate_synthetic_data():
 
 x_yes, x_noise = generate_synthetic_data()
 
-brain = Model(size=13)
+all_data = np.concatenate([x_yes, x_noise], axis=0)
+mean = np.mean(all_data, axis=0)
+std = np.std(all_data, axis=0) + 1e-8
+
+x_yes = (x_yes - mean) / std
+x_noise = (x_noise - mean) / std
+
+
+model = Sequential([
+    Dense(13, 32),
+    Relu,
+    Dense(32, 1),
+    Sigmoid,
+])
 
 print("Starting smoke test...")
 for i in range(101):
-    p_yes = brain.forward(x_yes)
-    brain.backward(1.0, lr=0.1)
+    p_yes = model.forward(x_yes)
+    model.backward(p_yes - 1.0, lr=0.1)
     
-    p_noise = brain.forward(x_noise)
-    brain.backward(0.0, lr=0.1)
+    p_noise = model.forward(x_noise)
+    model.backward(p_noise - 0.0, lr=0.1)
     
     if i % 20 == 0:
         print(f"Epoch {i:3}: Command prob={p_yes[0][0]:.4f} | Noise prob={p_noise[0][0]:.4f}")

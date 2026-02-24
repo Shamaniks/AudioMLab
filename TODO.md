@@ -2,7 +2,7 @@
 
 ### Phase 1: Custom Engine (The Framework)
 - [x] Initial NumPy model core.
-- [ ] **Modular Layer API**: Implement base `Layer` class for plug-and-play architecture.
+- [x] **Modular Layer API**: Implement base `Layer` class for plug-and-play architecture.
 - [ ] **Advanced Layers**:
     - [ ] `Dense`: Fully connected layer with Xavier/He initialization.
     - [ ] **`Conv1D`**: Manual 1D convolution and backprop for temporal audio patterns.

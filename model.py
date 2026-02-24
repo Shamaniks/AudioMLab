@@ -1,21 +1,13 @@
-import numpy as np
+class Sequential:
+    def __init__(self, layers):
+        self.layers = layers
 
-class Model:
-    def __init__(self, size=13):
-        self.W = np.random.randn(size, 1) * np.sqrt(1 / size)
-        self.b = 0.0
+    def forward(self, input_data):
+        for layer in self.layers:
+            input_data = layer.forward(input_data)
+        return input_data
 
-    def forward(self, x):
-        self.x = x
-        self.z = np.dot(x, self.W) + self.b
-        self.a = 1 / (1 + np.exp(-self.z)) # Sigmoid
-        return self.a
-
-    def backward(self, y_true, lr=0.1):
-        da = self.a - y_true
-        
-        dW = np.dot(self.x.T, da)
-        db = np.sum(da)
-        
-        self.W -= lr * dW
-        self.b -= lr * db
+    def backward(self, output_gradient, lr):
+        for layer in reversed(self.layers):
+            output_gradient = layer.backward(output_gradient, lr)
+        return output_gradient
