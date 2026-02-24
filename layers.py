@@ -35,6 +35,14 @@ class Dense(Layer):
         self.bias -= learning_rate * np.sum(output_gradient, axis=0, keepdims=True)
         return input_gradient
 
+class Flatten(Layer):
+    def forward(self, input_data):
+        self.input_shape = input_data.shape
+        return input_data.flatten().reshape(1, -1)
+
+    def backward(self, output_gradient, lr):
+        return output_gradient.reshape(self.input_shape)
+
 class Activation(Layer):
     def __init__(self, activation, activation_prime):
         super().__init__()

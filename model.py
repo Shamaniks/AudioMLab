@@ -1,3 +1,5 @@
+import numpy as np
+
 class Sequential:
     def __init__(self, layers):
         self.layers = layers
@@ -11,3 +13,54 @@ class Sequential:
         for layer in reversed(self.layers):
             output_gradient = layer.backward(output_gradient, lr)
         return output_gradient
+
+    def train_epoch(self, n_samples, X_train, y_train, criterion, batch_size, lr):
+        epoch_loss = 0
+        for i in range(0, n_samples, batch_size):
+            X_batch = X_train[i:i+batch_size]
+            y_batch = y_train[i:i+batch_size]
+
+            for x, y_true in zip(X_batch, y_batch):
+                #HARDCODED SHAPE
+                y_pred = self.forward(x.reshape(13, -1))
+                loss = criterion(y_pred, y_true)
+                epoch_loss += loss
+                grad = criterion.get_gradient()
+                self.backward(grad, lr)
+
+        return epoch_loss / n_samples
+
+    def val_epoch(self, X_val, y_val, criterion):
+        epoch_loss = 0
+        for x, y_true in zip(X_val, y_val):
+            #HARDCODED SHAPE
+            y_pred = self.forward(x.reshape(13, -1))
+            epoch_loss += criterion(y_pred, y_true)
+        return epoch_loss / len(X_val)
+
+    def fit(self, criterion, X_train, y_train, X_val, y_val, epochs=20, batch_size=32, lr=0.01):
+        n_samples = X_train.shape[0]
+
+        for epoch in range(epochs):
+            indices = np.arange(n_samples)
+            np.random.shuffle(indices)
+            X_train, y_train = X_train[indices], y_train[indices]
+
+            train_loss = self.train_epoch(n_samples, X_train, y_train, criterion, batch_size, lr)
+            val_loss   = self.val_epoch(X_val, y_val, criterion)
+            self.verbose(epoch, epochs, train_loss, val_loss)
+
+    def verbose(self, epoch, epochs, train_loss, val_loss):
+        print(f"Epoch {epoch + 1:>{len(str(epochs))}}/{epochs} - train_loss:{train_loss:.4f} val_loss:{val_loss:.4f}")
+
+class CategoricalCrossEntropy:
+    def __call__(self, y_pred, y_true_idx):
+        self.y_pred = np.clip(y_pred, 1e-15, 1.0 - 1e-15)
+        self.y_true_idx = y_true_idx
+        return -np.log(self.y_pred[0, y_true_idx])
+
+    def get_gradient(self):
+        grad = self.y_pred.copy()
+        grad[0, self.y_true_idx] -= 1
+        return grad
+
