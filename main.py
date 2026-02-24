@@ -32,7 +32,7 @@ x_noise = (x_noise - mean) / std
 model = Sequential([
     Dense(13, 32),
     Relu,
-    Dense(32, 1),
+    Dense(32, 1, init_type="xavier"),
     Sigmoid,
 ])
 

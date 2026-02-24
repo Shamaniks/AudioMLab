@@ -4,7 +4,7 @@
 - [x] Initial NumPy model core.
 - [x] **Modular Layer API**: Implement base `Layer` class for plug-and-play architecture.
 - [ ] **Advanced Layers**:
-    - [ ] `Dense`: Fully connected layer with Xavier/He initialization.
+    - [x] `Dense`: Fully connected layer with Xavier/He initialization.
     - [ ] **`Conv1D`**: Manual 1D convolution and backprop for temporal audio patterns.
     - [ ] `Flatten` & `Activation` (ReLU/Softmax) layers.
 - [ ] **Loss Functions**: Categorical Cross-Entropy for multi-class support.

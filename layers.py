@@ -13,9 +13,14 @@ class Layer:
         raise NotImplementedError
 
 class Dense(Layer):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size, output_size, init_type="he"):
         super().__init__()
-        self.weights = np.random.randn(input_size, output_size) * np.sqrt(2. / input_size)
+        if init_type == "he":
+            std = np.sqrt(2.0 / input_size)
+        else:
+            std = np.sqrt(1.0 / input_size)
+            
+        self.weights = np.random.randn(input_size, output_size) * std
         self.bias = np.zeros((1, output_size))
 
     def forward(self, input_data):
