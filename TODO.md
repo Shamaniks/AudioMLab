@@ -5,7 +5,7 @@
 - [x] **Modular Layer API**: Implement base `Layer` class for plug-and-play architecture.
 - [ ] **Advanced Layers**:
     - [x] `Dense`: Fully connected layer with Xavier/He initialization.
-    - [ ] **`Conv1D`**: Manual 1D convolution and backprop for temporal audio patterns.
+    - [x] **`Conv1D`**: Manual 1D convolution and backprop for temporal audio patterns.
     - [x] `Flatten` & `Activation` (ReLU/Softmax) layers.
 - [x] **Loss Functions**: Categorical Cross-Entropy for multi-class support.
 
