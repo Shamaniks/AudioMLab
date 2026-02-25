@@ -31,14 +31,62 @@ class Dense(Layer):
         weights_gradient = np.dot(self.input.T, output_gradient)
         input_gradient = np.dot(output_gradient, self.weights.T)
 
-        self.weights -= learning_rate * weights_gradient
-        self.bias -= learning_rate * np.sum(output_gradient, axis=0, keepdims=True)
+        batch_size = self.input.shape[0]
+        self.weights -= learning_rate * (weights_gradient / batch_size)
+        self.bias -= learning_rate * (np.sum(output_gradient, axis=0, keepdims=True) / batch_size)
+        return input_gradient
+
+class Conv1D(Layer):
+    def __init__(self, input_size, output_size, kernel_size, stride=1):
+        super().__init__()
+        self.stride = stride
+        self.kernel_size = kernel_size
+
+        he = np.sqrt(2.0 / input_size * kernel_size)
+        self.weights = np.random.randn(output_size, input_size, kernel_size) * he
+        self.bias = np.zeros((output_size, 1))
+
+    def _get_windows(self, input_data):
+        b, c, l = input_data.shape
+        out_l = (l - self.kernel_size) // self.stride + 1
+        
+        s_b, s_c, s_l = input_data.strides
+        shape = (b, out_l, c, self.kernel_size)
+        strides = (s_b, s_l * self.stride, s_c, s_l)
+        
+        return np.lib.stride_tricks.as_strided(input_data, shape=shape, strides=strides)
+
+    def forward(self, input_data):
+        self.input = input_data
+        windows = self.get_windows(input_data)
+        self.output = np.einsum('blck,ock->bol', windows, self.weights) + self.bias
+        return self.output
+
+    def backward(self, output_gradient, learning_rate):
+        batch, out_c, out_l = output_gradient.shape
+        _, in_c, k_size = self.weights.shape
+
+        bias_gradient = np.sum(output_gradient, axis=(0, 2)).reshape(-1, 1)
+
+        windows = self._get_windows(self.input)
+        weights_gradient = np.einsum('bol,blck->ock', output_gradient, windows)
+
+        input_gradient = np.zeros_like(self.input)
+        for i in range(out_l):
+            start = i * self.stride
+            end = start + k_size
+            input_gradient[:, :, start:end] += np.einsum('bo,ock->bck', output_gradient[:, :, i], self.weights)
+
+        self.weights -= learning_rate * (weights_gradient / batch)
+        self.bias -= learning_rate * (bias_gradient / batch)
+        
         return input_gradient
 
 class Flatten(Layer):
     def forward(self, input_data):
         self.input_shape = input_data.shape
-        return input_data.flatten().reshape(1, -1)
+        batch_size = input_data.shape[0]
+        return input_data.flatten().reshape(batch_size, -1)
 
     def backward(self, output_gradient, lr):
         return output_gradient.reshape(self.input_shape)

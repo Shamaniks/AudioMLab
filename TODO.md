@@ -11,10 +11,10 @@
 
 ### Phase 2: Signal Processing & Data
 - [ ] **Audio Pipeline**: 
-    - [ ] MFCC feature extraction with `librosa`.
+    - [x] MFCC feature extraction with `librosa`.
     - [ ] Signal normalization and fixed-length padding (1.0s).
 - [ ] **Google Speech Commands**: 
-    - [ ] Subset integration: `Yes`, `No`, and `Unknown` (distractors).
+    - [x] Subset integration: `Yes`, `No`, and `Unknown` (distractors).
     - [ ] Efficient data generator for training.
 
 ### Phase 3: Training & Delivery
