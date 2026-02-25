@@ -2,6 +2,19 @@ import os
 import librosa
 import numpy as np
 
+def extract_features(file_path, n_mfcc=13, max_len=32):
+    audio, sr = librosa.load(file_path, sr=16000)
+    mfcc = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=n_mfcc)
+    
+    if mfcc.shape[1] < max_len:
+        pad_width = max_len - mfcc.shape[1]
+        mfcc = np.pad(mfcc, ((0, 0), (0, pad_width)), mode='constant')
+    else:
+        mfcc = mfcc[:, :max_len]
+        
+    return mfcc
+
+
 def prepare_data(data_dir, n_mfcc=13, max_len=32):
     X, y = [], []
     label_map = {'yes': 0, 'no': 1, 'unknown': 2}
@@ -13,15 +26,7 @@ def prepare_data(data_dir, n_mfcc=13, max_len=32):
             if not file_name.endswith('.wav'): continue
             
             file_path = os.path.join(folder_path, file_name)
-            audio, sr = librosa.load(file_path, sr=16000)
-            
-            mfcc = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=n_mfcc)
-            
-            if mfcc.shape[1] < max_len:
-                pad_width = max_len - mfcc.shape[1]
-                mfcc = np.pad(mfcc, ((0, 0), (0, pad_width)), mode='constant')
-            else:
-                mfcc = mfcc[:, :max_len]
+            mfcc = extract_features(file_path, n_mfcc, max_len)
             
             X.append(mfcc)
             y.append(label_idx)

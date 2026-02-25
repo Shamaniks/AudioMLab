@@ -10,15 +10,15 @@
 - [x] **Loss Functions**: Categorical Cross-Entropy for multi-class support.
 
 ### Phase 2: Signal Processing & Data
-- [ ] **Audio Pipeline**: 
+- [x] **Audio Pipeline**: 
     - [x] MFCC feature extraction with `librosa`.
-    - [ ] Signal normalization and fixed-length padding (1.0s).
+    - [x] Signal normalization and fixed-length padding (1.0s).
 - [ ] **Google Speech Commands**: 
     - [x] Subset integration: `Yes`, `No`, and `Unknown` (distractors).
     - [ ] Efficient data generator for training.
 
 ### Phase 3: Training & Delivery
-- [ ] **Integration**: Build a `Sequential` model (Conv1D -> ReLU -> Dense -> Softmax).
-- [ ] **Validation**: Achieve stable convergence on the 3-class problem.
+- [x] **Integration**: Build a `Sequential` model (Conv1D -> ReLU -> Dense -> Softmax).
+- [x] **Validation**: Achieve stable convergence on the 3-class problem.
 - [ ] **Demo**: Script for local inference on raw `.wav` files.
 - [ ] **Final README**: Documenting the math and performance.
