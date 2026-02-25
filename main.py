@@ -2,7 +2,7 @@ import numpy as np
 
 from model import Sequential, CategoricalCrossEntropy
 from layers import *
-from data_utils import prepare_data
+from data_utils import prepare_data, extract_features, LABEL_MAP
 
 X_train, y_train = prepare_data('dataset/train')
 X_val, y_val = prepare_data('dataset/val')
@@ -24,7 +24,7 @@ linear_model.fit(
     CategoricalCrossEntropy(),
     X_train, y_train,
     X_val,   y_val,
-    epochs=300,
+    epochs=100,
     batch_size=32,
     lr=0.001
 )
@@ -45,7 +45,29 @@ conv_model.fit(
     CategoricalCrossEntropy(),
     X_train, y_train,
     X_val,   y_val,
-    epochs=300,
+    epochs=100,
     batch_size=32,
     lr=0.001
 )
+
+import os
+
+def run_inference(model, folder_path="inference"):
+    files = [f for f in os.listdir(folder_path) if f.endswith('.wav')]
+    
+    for file_name in files:
+        path = os.path.join(folder_path, file_name)
+        
+        features = extract_features(path)
+        
+        x = features[np.newaxis, ...] 
+        y_pred = model.forward(x)
+        
+        idx = np.argmax(y_pred, axis=1)[0]
+        confidence = np.max(y_pred)
+        
+        print(f"File: {file_name:20} | Result: {list(LABEL_MAP.keys())[idx]:10} | Conf: {confidence:.4f}")
+
+run_inference(linear_model)
+run_inference(conv_model)
+
