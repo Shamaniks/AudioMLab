@@ -31,6 +31,11 @@ class Sequential:
     def val_epoch(self, X_val, y_val, criterion):
         y_pred = self.forward(X_val)
         val_loss = criterion.forward(y_pred, y_val)
+
+        predictions = np.argmax(y_pred, axis=1)
+        y_true = np.argmax(y_val, axis=1) if y_val.ndim > 1 else y_val
+        self.val_acc = np.mean(predictions == y_true)
+
         return val_loss
 
     def fit(self, criterion, X_train, y_train, X_val, y_val, epochs=20, batch_size=32, lr=0.01):
@@ -45,7 +50,10 @@ class Sequential:
             self.verbose(epoch, epochs, train_loss, val_loss)
 
     def verbose(self, epoch, epochs, train_loss, val_loss):
-        print(f"Epoch {epoch + 1:>{len(str(epochs))}}/{epochs} - train_loss:{train_loss:.4f} val_loss:{val_loss:.4f}")
+        print(f"Epoch {epoch + 1:>{len(str(epochs))}}/{epochs} "
+              f"- loss: {train_loss:.4f} "
+              f"- val_loss: {val_loss:.4f} "
+              f"- val_acc: {self.val_acc:.4f}")
 
 class CategoricalCrossEntropy:
     def forward(self, y_pred, y_true_idx):

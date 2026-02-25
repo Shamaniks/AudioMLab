@@ -58,7 +58,7 @@ class Conv1D(Layer):
 
     def forward(self, input_data):
         self.input = input_data
-        windows = self.get_windows(input_data)
+        windows = self._get_windows(input_data)
         self.output = np.einsum('blck,ock->bol', windows, self.weights) + self.bias
         return self.output
 
@@ -116,10 +116,10 @@ class Softmax(Layer):
 
 def relu(x): return np.maximum(0, x)
 def relu_prime(x): return (x > 0).astype(float)
-Relu = Activation(relu, relu_prime)
+Relu = lambda: Activation(relu, relu_prime)
 
 def sigmoid(x): return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
 def sigmoid_prime(x): 
     s = sigmoid(x)
     return s * (1 - s)
-Sigmoid = Activation(sigmoid, sigmoid_prime)
+Sigmoid = lambda: Activation(sigmoid, sigmoid_prime)
