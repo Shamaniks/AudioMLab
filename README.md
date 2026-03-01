@@ -15,14 +15,6 @@ To build a robust classifier for "Yes", "No", and "Unknown" commands using the *
 - **NumPy** (Linear Algebra & Model Logic)
 - **Librosa** (Digital Signal Processing)
 
-## 📁 Current Progress
-- [x] Implement core `Model` class with Backpropagation.
-- [x] Create MFCC feature extraction pipeline.
-- [x] Pass synthetic data convergence test.
-- [ ] Integrate Google Speech Commands Dataset (v0.02).
-- [ ] Add support for hidden layers (MLP architecture).
-- [ ] Implement model persistence (save/load weights).
-
 ## 🚀 Getting Started
 ```bash
 # Install dependencies
